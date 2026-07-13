@@ -30,14 +30,17 @@ def load_tables() -> dict[str, pd.DataFrame]:
             repo_type="dataset",
         )
         name = file_path[len(DATA_DIR) + 1:]  # strip "published_data/"
-        if file_path.endswith(".parquet"):
-            tables[name] = pd.read_parquet(local_path)
-        elif file_path.endswith(".csv"):
-            tables[name] = pd.read_csv(local_path)
-        elif file_path.endswith(".jsonl") or file_path.endswith(".json"):
-            tables[name] = pd.read_json(local_path, lines=file_path.endswith(".jsonl"))
-        else:
-            print(f"Skipping unsupported file type: {file_path}")
+        try:
+            if file_path.endswith(".parquet"):
+                tables[name] = pd.read_parquet(local_path)
+            elif file_path.endswith(".csv"):
+                tables[name] = pd.read_csv(local_path)
+            elif file_path.endswith(".jsonl") or file_path.endswith(".json"):
+                tables[name] = pd.read_json(local_path, lines=file_path.endswith(".jsonl"))
+            else:
+                print(f"Skipping unsupported file type: {file_path}")
+        except Exception as exc:
+            print(f"Error loading {file_path}: {exc}")
 
     return tables
 
