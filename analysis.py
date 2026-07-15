@@ -44,21 +44,43 @@ def load_tables() -> dict[str, pd.DataFrame]:
 
     return tables
 
+def summarize_table(name: str, df: pd.DataFrame):
+    print("=" * 70)
+    print(f"TABLE: {name}")
+    print("=" * 70)
+
+    print(f"Rows: {len(df):,}")
+    print(f"Columns: {len(df.columns)}")
+
+    print("\nColumn Types:")
+    print(df.dtypes)
+
+    print("\nMissing Values:")
+    print(df.isna().sum())
+
+    print("\nFirst Five Rows:")
+    print(df.head())
+    print("\nUnique Values Per Column:")
+    print(df.nunique())
+
+    print("\nExample Values:")
+    for col in df.columns:
+        print(f"\n{col}")
+        print(df[col].drop_duplicates().head(10).tolist())
+
+    print("\n")
 
 def main() -> None:
     tables = load_tables()
 
     if not tables:
-        print("No tables found in published_data.")
+        print("No tables found.")
         return
 
-    print("Row counts per table:")
-    print("-" * 40)
     for name, df in tables.items():
-        print(f"  {name}: {len(df):,} rows")
-    print("-" * 40)
-    print(f"  Total tables: {len(tables)}")
-
+        summarize_table(name, df)
 
 if __name__ == "__main__":
     main()
+
+
